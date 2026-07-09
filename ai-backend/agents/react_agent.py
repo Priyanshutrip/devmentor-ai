@@ -3,12 +3,12 @@ import json
 import os
 from dotenv import load_dotenv
 from tools.github_tool import get_user_repos, get_repo_files, get_file_content
+from memory.memory_manager import load_memory, save_memory, add_session, add_repo_insight, format_memory_for_prompt
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# --- Define tools the agent can use ---
 TOOLS = [
     {
         "name": "get_user_repos",
@@ -53,7 +53,6 @@ TOOLS = [
     }
 ]
 
-# --- Tool executor ---
 def execute_tool(tool_name, tool_input):
     print(f"\n🔧 Agent is using tool: {tool_name} with input: {tool_input}")
     if tool_name == "get_user_repos":
@@ -65,21 +64,32 @@ def execute_tool(tool_name, tool_input):
     else:
         return "Tool not found"
 
-# --- ReAct Agent loop ---
 def run_agent(user_task):
     print(f"\n🚀 Starting ReAct Agent")
     print(f"📋 Task: {user_task}")
     print("-" * 50)
 
+    # --- Phase 2: Load memory ---
+    memory = load_memory()
+    memory_text = format_memory_for_prompt(memory)
+    print(f"\n🧠 Memory loaded:\n{memory_text}")
+
     messages = [
-        {"role": "system", "content": """You are DevMentor AI, an intelligent coding mentor agent.
+        {"role": "system", "content": f"""You are DevMentor AI, an intelligent coding mentor agent.
 You have access to tools to fetch GitHub repositories and review code.
+
+{memory_text}
+
 When given a task:
 1. THINK about what steps are needed
 2. USE tools to gather information
 3. OBSERVE the results
 4. REPEAT until you have enough information
 5. Give a detailed, helpful final response
+
+At the end of your final answer, always include:
+SUMMARY: <one sentence summary of what you did>
+REPO_INSIGHT: <repo_name>|<one sentence insight about that repo>
 
 Always explain your reasoning before using a tool."""},
         {"role": "user", "content": user_task}
@@ -93,6 +103,8 @@ Always explain your reasoning before using a tool."""},
             "parameters": t["input_schema"]
         }
     } for t in TOOLS]
+
+    final_answer = ""
 
     # ReAct loop
     while True:
@@ -108,31 +120,50 @@ Always explain your reasoning before using a tool."""},
 
         print(f"\n🤔 Agent thinking... (finish_reason: {finish_reason})")
 
-        # Add assistant message to history
-        messages.append({"role": "assistant", "content": msg.content or "", "tool_calls": msg.tool_calls or []})
+        messages.append({
+            "role": "assistant",
+            "content": msg.content or "",
+            "tool_calls": msg.tool_calls or []
+        })
 
-        # If agent is done
         if finish_reason == "stop" or not msg.tool_calls:
-            print(f"\n✅ Final Answer:\n{msg.content}")
+            final_answer = msg.content
+            print(f"\n✅ Final Answer:\n{final_answer}")
             break
 
-        # If agent wants to use tools
         if finish_reason == "tool_calls" or msg.tool_calls:
             for tool_call in msg.tool_calls:
                 tool_name = tool_call.function.name
                 tool_input = json.loads(tool_call.function.arguments)
-
                 result = execute_tool(tool_name, tool_input)
-
                 print(f"👀 Observing result: {str(result)[:200]}...")
-
-                # Feed result back to agent
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tool_call.id,
                     "content": json.dumps(result)
                 })
 
-# --- Run it ---
+    # --- Phase 2: Save memory after agent finishes ---
+    if final_answer:
+        # Extract summary from final answer
+        summary = "Reviewed GitHub repositories"
+        repo_insight_name = ""
+        repo_insight_text = ""
+
+        for line in final_answer.split("\n"):
+            if line.startswith("SUMMARY:"):
+                summary = line.replace("SUMMARY:", "").strip()
+            if line.startswith("REPO_INSIGHT:"):
+                parts = line.replace("REPO_INSIGHT:", "").strip().split("|")
+                if len(parts) == 2:
+                    repo_insight_name = parts[0].strip()
+                    repo_insight_text = parts[1].strip()
+
+        # Save to memory
+        memory = add_session(memory, user_task, summary)
+        if repo_insight_name and repo_insight_text:
+            memory = add_repo_insight(memory, repo_insight_name, repo_insight_text)
+        save_memory(memory)
+
 if __name__ == "__main__":
     run_agent("Review my GitHub repositories and tell me which one has the best code quality and why.")
