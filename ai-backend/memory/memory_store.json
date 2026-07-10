@@ -14,6 +14,11 @@
       "timestamp": "2026-07-10T13:57:48.413461",
       "task": "I want to learn error handling in Java and practice DSA problems related to it",
       "summary": "Created learning plan for: I want to learn error handling in Java and practice DSA problems related to it with 4 steps"
+    },
+    {
+      "timestamp": "2026-07-10T16:56:16.087862",
+      "task": "How does binary search work and what is its time complexity?",
+      "summary": "Answered DSA question about: How does binary search work and what is its time c"
     }
   ],
   "repo_insights": {
@@ -27,5 +32,5 @@
     }
   },
   "user_weak_areas": [],
-  "last_reviewed": "2026-07-10T13:57:48.413545"
+  "last_reviewed": "2026-07-10T16:56:16.087887"
 }
