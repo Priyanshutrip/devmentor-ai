@@ -19,6 +19,16 @@
       "timestamp": "2026-07-10T16:56:16.087862",
       "task": "How does binary search work and what is its time complexity?",
       "summary": "Answered DSA question about: How does binary search work and what is its time c"
+    },
+    {
+      "timestamp": "2026-07-13T21:47:30.654521",
+      "task": "What is the time complexity of merge sort?",
+      "summary": "Answered DSA question about: What is the time complexity of merge sort?"
+    },
+    {
+      "timestamp": "2026-07-13T21:50:10.054476",
+      "task": "I want to learn dynamic programming step by step with practice",
+      "summary": "Created learning plan for: I want to learn dynamic programming step by step with practice with 4 steps"
     }
   ],
   "repo_insights": {
@@ -32,5 +42,5 @@
     }
   },
   "user_weak_areas": [],
-  "last_reviewed": "2026-07-10T16:56:16.087887"
+  "last_reviewed": "2026-07-13T21:50:10.054516"
 }
