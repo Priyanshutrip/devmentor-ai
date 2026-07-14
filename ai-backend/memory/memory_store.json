@@ -29,6 +29,21 @@
       "timestamp": "2026-07-13T21:50:10.054476",
       "task": "I want to learn dynamic programming step by step with practice",
       "summary": "Created learning plan for: I want to learn dynamic programming step by step with practice with 4 steps"
+    },
+    {
+      "timestamp": "2026-07-14T12:52:19.553375",
+      "task": "How does binary search work and what is its time complexity?",
+      "summary": "Answered DSA question about: How does binary search work and what is its time c"
+    },
+    {
+      "timestamp": "2026-07-14T12:54:40.280775",
+      "task": "Explain the difference between BFS and DFS with a graph that has a cycle, including edge cases",
+      "summary": "Answered DSA question about: Explain the difference between BFS and DFS with a "
+    },
+    {
+      "timestamp": "2026-07-14T12:59:17.869120",
+      "task": "Explain the difference between BFS and DFS with a graph that has a cycle, including edge cases",
+      "summary": "Answered DSA question about: Explain the difference between BFS and DFS with a "
     }
   ],
   "repo_insights": {
@@ -42,5 +57,5 @@
     }
   },
   "user_weak_areas": [],
-  "last_reviewed": "2026-07-13T21:50:10.054516"
+  "last_reviewed": "2026-07-14T12:59:17.869162"
 }
