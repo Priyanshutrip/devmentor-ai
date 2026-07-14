@@ -59,7 +59,6 @@ def run_orchestrator(user_input: str):
     print(f"📥 User request: {user_input}")
     print("=" * 50)
 
-    # Route the request
     decision = route_request(user_input)
     agent_choice = decision.get("agent", "dsa_tutor")
     reason = decision.get("reason", "")
@@ -68,16 +67,17 @@ def run_orchestrator(user_input: str):
     print(f"💡 Reason: {reason}")
     print("-" * 50)
 
-    # Call the right specialist agent
     if agent_choice == "code_reviewer":
-        run_agent(user_input)
+        result = run_agent(user_input)
     elif agent_choice == "planner":
-        run_planner(user_input)
+        result = run_planner(user_input)
     elif agent_choice == "dsa_tutor":
-        run_dsa_tutor(user_input)
+        result = run_dsa_tutor(user_input)
     else:
         print("⚠️ Unknown agent choice, defaulting to DSA tutor")
-        run_dsa_tutor(user_input)
+        result = run_dsa_tutor(user_input)
+
+    return result
 
 
 if __name__ == "__main__":
