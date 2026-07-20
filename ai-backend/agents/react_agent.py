@@ -164,7 +164,7 @@ Always explain your reasoning before using a tool."""},
         if repo_insight_name and repo_insight_text:
             memory = add_repo_insight(memory, repo_insight_name, repo_insight_text)
         save_memory(memory)
-    return final_answer
+        return final_answer
 
 if __name__ == "__main__":
     run_agent("Review my GitHub repositories and tell me which one has the best code quality and why.")
