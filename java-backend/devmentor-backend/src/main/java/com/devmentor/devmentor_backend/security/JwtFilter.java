@@ -22,23 +22,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                     @NonNull HttpServletResponse response,
-                                     @NonNull FilterChain filterChain)
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
+        System.out.println("🔍 Incoming Authorization header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            boolean isValid = jwtUtil.validateToken(token);
+            System.out.println("🔍 Token valid? " + isValid);
 
-            if (jwtUtil.validateToken(token)) {
+            if (isValid) {
                 String username = jwtUtil.extractUsername(token);
+                System.out.println("✅ Authenticated as: " + username);
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+        } else {
+            System.out.println("⚠️ No Authorization header found or malformed");
         }
 
         filterChain.doFilter(request, response);
